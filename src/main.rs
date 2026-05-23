@@ -1,19 +1,9 @@
+mod dict_loader;
 mod game_core;
 
-use std::{
-    collections::HashSet,
-    io::{self, Write},
-};
+use std::io::{self, Write};
 
 use crate::game_core::{CharStatus, GameState};
-
-fn placeholder_dict() -> HashSet<String> {
-    let mut dict: HashSet<String> = HashSet::new();
-    dict.insert(String::from("guess"));
-    dict.insert(String::from("aaaaa"));
-
-    return dict;
-}
 
 fn dump_guess_result(guess: &str, result: Vec<CharStatus>) {
     println!("{guess}");
@@ -21,14 +11,18 @@ fn dump_guess_result(guess: &str, result: Vec<CharStatus>) {
 }
 
 fn main() {
-    let mut game =
-        match GameState::new_game_with_dict(6, 5, placeholder_dict(), String::from("guess")) {
-            Ok(game) => game,
-            Err(e) => {
-                println!("failed to init game: {e}");
-                return;
-            }
-        };
+    let mut game = match GameState::new_game_with_dict(
+        6,
+        5,
+        dict_loader::load_default_dict(),
+        String::from("guess"),
+    ) {
+        Ok(game) => game,
+        Err(e) => {
+            println!("failed to init game: {e}");
+            return;
+        }
+    };
     let mut buffer = String::new();
     while game.guesses_left > 0 && !game.won {
         print!("{} guess(es) left: ", game.guesses_left);
