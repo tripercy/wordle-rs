@@ -1,20 +1,20 @@
 use crate::game_core::GameState;
 use std::collections::HashSet;
 
-impl GameState {
+impl<'a> GameState<'a> {
     pub fn new_game_with_dict(
         guesses_max: usize,
         word_len: usize,
-        valid_words: HashSet<String>,
+        dictionary: &'a HashSet<String>,
         answer: String,
-    ) -> Result<GameState, String> {
+    ) -> Result<GameState<'a>, String> {
         let game_state = GameState {
             guesses_max,
             guesses_left: guesses_max,
             won: false,
             word_len,
             use_dict: true,
-            dictionary: valid_words,
+            dictionary,
             answer,
         };
 
@@ -27,7 +27,7 @@ impl GameState {
 
     fn check_init_state_valid(&self) -> Result<bool, String> {
         if self.use_dict {
-            for word in &(self.dictionary) {
+            for word in self.dictionary {
                 if word.len() != self.word_len {
                     return Err(format!(
                         "invalid word in dict: {word}, len: {}, expected: {}",

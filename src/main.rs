@@ -11,12 +11,8 @@ fn dump_guess_result(guess: &str, result: Vec<CharStatus>) {
 }
 
 fn main() {
-    let mut game = match GameState::new_game_with_dict(
-        6,
-        5,
-        dict_loader::load_default_dict(),
-        String::from("guess"),
-    ) {
+    let dict = dict_loader::load_default_dict();
+    let mut game = match GameState::new_game_with_dict(6, 5, &dict, String::from("guess")) {
         Ok(game) => game,
         Err(e) => {
             println!("failed to init game: {e}");

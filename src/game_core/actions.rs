@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::game_core::CharStatus;
 use crate::game_core::GameState;
 
-impl GameState {
+impl<'a> GameState<'a> {
     pub fn make_guess(&mut self, guess: &str) -> Result<Vec<CharStatus>, String> {
         if self.guesses_left == 0 {
             return Err(String::from("out of guess"));
