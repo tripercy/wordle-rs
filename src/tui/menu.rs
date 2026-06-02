@@ -2,7 +2,10 @@ use std::io;
 
 use crossterm::event::{self, KeyCode};
 use ratatui::{
-    DefaultTerminal, Frame, layout::Constraint, style::{Color, Style}, widgets::{Block, List, ListState}
+    DefaultTerminal, Frame,
+    layout::Constraint,
+    style::{Color, Style},
+    widgets::{List, ListState},
 };
 
 use crate::tui::AppState;
@@ -52,10 +55,9 @@ impl Menu {
 
         frame.render_stateful_widget(
             list,
-            frame.area().centered(
-                Constraint::Ratio(1, 4),
-                Constraint::Ratio(1, 4),
-            ),
+            frame
+                .area()
+                .centered(Constraint::Ratio(1, 4), Constraint::Ratio(1, 4)),
             &mut ListState::default().with_selected(Some(self.select_index)),
         );
     }
@@ -94,7 +96,7 @@ impl Menu {
         match state {
             AppState::GAME => "Start",
             AppState::QUIT => "Quit",
-            AppState::MENU => "HOW", // no, fr, how?
+            AppState::MENU => panic!("how?"), // no, fr, how?
         }
     }
 }
