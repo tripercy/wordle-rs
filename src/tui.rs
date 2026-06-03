@@ -1,5 +1,6 @@
 mod game;
 mod menu;
+mod custom_widgets;
 
 use ratatui::DefaultTerminal;
 use std::{collections::HashSet, io};
