@@ -65,7 +65,7 @@ impl<'a> Game<'a> {
             terminal.draw(|f| self.render(f))?;
             self.handle_input()?;
         }
-        return Ok(AppState::MENU);
+        return Ok(self.next_screen);
     }
 }
 
@@ -211,15 +211,19 @@ impl<'a> Game<'a> {
 
     fn make_guess(&mut self) {
         let guess = self.input_buffer.to_lowercase();
-        // TODO: replace with game witd len
+        // TODO: replace with game word len
         if guess.len() != 5 {
-            self.set_noti("It's too short", &format!("{} is too short :(", guess.len()));
+            self.set_noti(
+                "It's too short",
+                &format!("{} is too short :(", guess.len()),
+            );
             return;
         }
         match self.game_state.make_guess(&guess) {
             Ok(result) => {
                 self.add_guess(&guess, result);
                 self.input_buffer.clear();
+                self.check_game_end();
             }
             Err(msg) => self.set_noti("Couldn't submit", &msg),
         }
@@ -231,6 +235,25 @@ impl<'a> Game<'a> {
             .map(|status| Self::map_char_status_to_style(*status))
             .collect();
         self.guesses.push(BlockyText::new(guess.chars(), styles));
+    }
+
+    fn check_game_end(&mut self) {
+        if self.game_state.won {
+            self.input_state = InputState::FINISH;
+            self.set_noti(
+                "You won!!",
+                "<esc>/<q> to quit to menu, any other key to start anew",
+            );
+        } else if self.game_state.guesses_left == 0 {
+            self.input_state = InputState::FINISH;
+            self.set_noti(
+                &format!(
+                    "You lost, nerd! The word was {}",
+                    self.game_state.get_answer().unwrap()
+                ),
+                "<esc>/<q> to run away, any key to lose again.",
+            );
+        }
     }
 
     fn quit(&mut self) {

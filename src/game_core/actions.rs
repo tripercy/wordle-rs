@@ -5,6 +5,10 @@ use crate::game_core::GameState;
 
 impl<'a> GameState<'a> {
     pub fn make_guess(&mut self, guess: &str) -> Result<Vec<CharStatus>, String> {
+        if self.won {
+            return Err(String::from("already won"));
+        }
+
         if self.guesses_left == 0 {
             return Err(String::from("out of guess"));
         }
@@ -20,6 +24,13 @@ impl<'a> GameState<'a> {
         }
 
         return Ok(check_guess(&self.answer, guess));
+    }
+
+    pub fn get_answer(&'a self) -> Result<&'a str, &str> {
+        if !self.won && self.guesses_left > 0 {
+            return Err("game must be finished before answer can be accessed");
+        }
+        return Ok(&self.answer);
     }
 
     fn check_valid_guess(&self, guess: &str) -> Result<bool, String> {
