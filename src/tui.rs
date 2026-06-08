@@ -14,9 +14,9 @@ use crate::{
 
 #[derive(PartialEq, Clone, Copy)]
 enum AppState {
-    MENU,
-    GAME,
-    QUIT,
+    Menu,
+    Game,
+    Quit,
 }
 
 pub struct Tui<I>
@@ -39,11 +39,11 @@ impl Default for Tui<word_picker::RandomPicker> {
 
 impl<T: Iterator<Item = String>> Tui<T> {
     pub fn run(&mut self, terminal: &mut DefaultTerminal) -> io::Result<()> {
-        let mut current_state = AppState::MENU;
-        while current_state != AppState::QUIT {
+        let mut current_state = AppState::Menu;
+        while current_state != AppState::Quit {
             current_state = match current_state {
-                AppState::MENU => Menu::default().run(terminal)?,
-                AppState::GAME => Game::new(
+                AppState::Menu => Menu::default().run(terminal)?,
+                AppState::Game => Game::new(
                     GameState::new_game_with_dict(
                         6,
                         5,
@@ -53,7 +53,7 @@ impl<T: Iterator<Item = String>> Tui<T> {
                     .expect("failed to create game state"),
                 )
                 .run(terminal)?,
-                _ => AppState::QUIT,
+                _ => AppState::Quit,
             }
         }
         Ok(())

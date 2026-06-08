@@ -22,9 +22,9 @@ use crate::{
  * FINISH -> running.false
  * */
 enum InputState {
-    INPUT,
-    QUITTING,
-    FINISH,
+    Input,
+    Quitting,
+    Finish,
 }
 
 pub struct Game<'a> {
@@ -48,8 +48,8 @@ impl<'a> Game<'a> {
         let guess_width = 5 * 5 + 2; // TODO: replace with word len
         Game {
             running: true,
-            input_state: InputState::INPUT,
-            next_screen: AppState::MENU,
+            input_state: InputState::Input,
+            next_screen: AppState::Menu,
             guesses: vec![],
             game_state,
             guess_area_height,
@@ -148,9 +148,9 @@ impl<'a> Game<'a> {
     fn handle_input(&mut self) -> io::Result<()> {
         if let Some(key) = event::read()?.as_key_press_event() {
             match self.input_state {
-                InputState::INPUT => self.handle_input_input_state(key.code),
-                InputState::QUITTING => self.handle_input_quitting_state(key.code),
-                InputState::FINISH => self.handle_input_finish_state(key.code),
+                InputState::Input => self.handle_input_input_state(key.code),
+                InputState::Quitting => self.handle_input_quitting_state(key.code),
+                InputState::Finish => self.handle_input_finish_state(key.code),
             }
         }
 
@@ -178,15 +178,15 @@ impl<'a> Game<'a> {
 
     fn handle_input_finish_state(&mut self, key_code: KeyCode) {
         if key_code.is_esc() || key_code.is_char('q') {
-            self.next_screen = AppState::MENU;
+            self.next_screen = AppState::Menu;
         } else {
-            self.next_screen = AppState::GAME;
+            self.next_screen = AppState::Game;
         }
         self.quit();
     }
 
     fn enter_quitting_state(&mut self) {
-        self.input_state = InputState::QUITTING;
+        self.input_state = InputState::Quitting;
         self.set_noti(
             "Quitting?",
             "<Esc> to quit to menu, any key to continue input.",
@@ -194,7 +194,7 @@ impl<'a> Game<'a> {
     }
 
     fn exit_quitting_state(&mut self) {
-        self.input_state = InputState::INPUT;
+        self.input_state = InputState::Input;
         self.clear_noti();
     }
 
@@ -244,13 +244,13 @@ impl<'a> Game<'a> {
 
     fn check_game_end(&mut self) {
         if self.game_state.won {
-            self.input_state = InputState::FINISH;
+            self.input_state = InputState::Finish;
             self.set_noti(
                 "You won!!",
                 "<esc>/<q> to quit to menu, any other key to start anew",
             );
         } else if self.game_state.guesses_left == 0 {
-            self.input_state = InputState::FINISH;
+            self.input_state = InputState::Finish;
             self.set_noti(
                 &format!(
                     "You lost, nerd! The word was {}",
@@ -267,9 +267,9 @@ impl<'a> Game<'a> {
 
     fn map_char_status_to_style(status: CharStatus) -> Style {
         match status {
-            CharStatus::CORRECT => Style::new().green(),
-            CharStatus::EXIST => Style::new().yellow(),
-            CharStatus::WRONG => Style::new().gray(),
+            CharStatus::Correct => Style::new().green(),
+            CharStatus::Exist => Style::new().yellow(),
+            CharStatus::Wrong => Style::new().gray(),
         }
     }
 

@@ -27,7 +27,7 @@ impl Default for Menu {
 }
 
 impl Menu {
-    const MENU_ITEMS: &'static [AppState] = &[AppState::GAME, AppState::QUIT];
+    const MENU_ITEMS: &'static [AppState] = &[AppState::Game, AppState::Quit];
 
     pub fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<AppState> {
         self.running = true;
@@ -89,14 +89,14 @@ impl Menu {
 
     fn quit(&mut self) {
         self.running = false;
-        self.selected_item = AppState::QUIT;
+        self.selected_item = AppState::Quit;
     }
 
     fn map_menu_item_to_str(state: AppState) -> &'static str {
         match state {
-            AppState::GAME => "Start",
-            AppState::QUIT => "Quit",
-            AppState::MENU => panic!("how?"), // no, fr, how?
+            AppState::Game => "Start",
+            AppState::Quit => "Quit",
+            AppState::Menu => panic!("how?"), // no, fr, how?
         }
     }
 }

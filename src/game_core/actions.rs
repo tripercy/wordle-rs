@@ -18,7 +18,7 @@ impl<'a> GameState<'a> {
         self.guesses_left -= 1;
         if self.answer.eq(guess) {
             self.won = true;
-            return Ok(vec![CharStatus::CORRECT; self.word_len]);
+            return Ok(vec![CharStatus::Correct; self.word_len]);
         }
 
         Ok(check_guess(&self.answer, guess))
@@ -49,7 +49,7 @@ impl<'a> GameState<'a> {
 }
 
 fn check_guess(answer: &str, guess: &str) -> Vec<CharStatus> {
-    let mut status = vec![CharStatus::WRONG; guess.len()];
+    let mut status = vec![CharStatus::Wrong; guess.len()];
     let mut char_count: HashMap<char, i32> = HashMap::new();
 
     for letter in answer.chars() {
@@ -61,7 +61,7 @@ fn check_guess(answer: &str, guess: &str) -> Vec<CharStatus> {
     // check for CORRECT letters first
     for (idx, letter) in guess_chars.iter().enumerate() {
         if *letter == word_chars[idx] {
-            status[idx] = CharStatus::CORRECT;
+            status[idx] = CharStatus::Correct;
             char_count
                 .entry(*letter)
                 .and_modify(|cnt_ptr| *cnt_ptr -= 1);
@@ -70,14 +70,14 @@ fn check_guess(answer: &str, guess: &str) -> Vec<CharStatus> {
 
     // check for EXIST
     for (idx, letter) in guess_chars.iter().enumerate() {
-        if status[idx] == CharStatus::CORRECT {
+        if status[idx] == CharStatus::Correct {
             continue;
         }
         if let Some(cnt_ptr) = char_count.get_mut(letter) {
             if *cnt_ptr == 0 {
                 continue;
             } else {
-                status[idx] = CharStatus::EXIST;
+                status[idx] = CharStatus::Exist;
                 *cnt_ptr -= 1;
             }
         }
