@@ -6,7 +6,7 @@ pub struct RandomPicker {
 
 impl RandomPicker {
     pub fn new(words: Vec<String>) -> RandomPicker {
-        return RandomPicker { words };
+        RandomPicker { words }
     }
 }
 
@@ -14,6 +14,6 @@ impl Iterator for RandomPicker {
     type Item = String;
 
     fn next(&mut self) -> Option<Self::Item> {
-        return self.words.iter().choose(&mut rand::thread_rng()).cloned();
+        self.words.iter().choose(&mut rand::thread_rng()).cloned()
     }
 }

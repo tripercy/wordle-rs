@@ -6,5 +6,5 @@ pub fn load_mock_dict(word_len: usize) -> HashSet<String> {
         dict.insert(c.to_string().repeat(word_len));
     }
 
-    return dict;
+    dict
 }

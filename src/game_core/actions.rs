@@ -13,9 +13,7 @@ impl<'a> GameState<'a> {
             return Err(String::from("out of guess"));
         }
 
-        if let Err(e) = self.check_valid_guess(guess) {
-            return Err(e);
-        }
+        self.check_valid_guess(guess)?;
 
         self.guesses_left -= 1;
         if self.answer.eq(guess) {
@@ -23,14 +21,14 @@ impl<'a> GameState<'a> {
             return Ok(vec![CharStatus::CORRECT; self.word_len]);
         }
 
-        return Ok(check_guess(&self.answer, guess));
+        Ok(check_guess(&self.answer, guess))
     }
 
     pub fn get_answer(&'a self) -> Result<&'a str, &'a str> {
         if !self.won && self.guesses_left > 0 {
             return Err("game must be finished before answer can be accessed");
         }
-        return Ok(&self.answer);
+        Ok(&self.answer)
     }
 
     fn check_valid_guess(&self, guess: &str) -> Result<bool, String> {
@@ -46,7 +44,7 @@ impl<'a> GameState<'a> {
             return Err(String::from("guess not present in dictionary"));
         }
 
-        return Ok(true);
+        Ok(true)
     }
 }
 
@@ -75,7 +73,7 @@ fn check_guess(answer: &str, guess: &str) -> Vec<CharStatus> {
         if status[idx] == CharStatus::CORRECT {
             continue;
         }
-        if let Some(cnt_ptr) = char_count.get_mut(&letter) {
+        if let Some(cnt_ptr) = char_count.get_mut(letter) {
             if *cnt_ptr == 0 {
                 continue;
             } else {
@@ -85,5 +83,5 @@ fn check_guess(answer: &str, guess: &str) -> Vec<CharStatus> {
         }
     }
 
-    return status;
+    status
 }

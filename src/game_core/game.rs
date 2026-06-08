@@ -18,11 +18,9 @@ impl<'a> GameState<'a> {
             answer,
         };
 
-        if let Err(err_msg) = game_state.check_init_state_valid() {
-            return Err(err_msg);
-        }
+        game_state.check_init_state_valid()?;
 
-        return Ok(game_state);
+        Ok(game_state)
     }
 
     fn check_init_state_valid(&self) -> Result<bool, String> {
@@ -49,6 +47,6 @@ impl<'a> GameState<'a> {
                 ));
             }
         }
-        return Ok(true);
+        Ok(true)
     }
 }

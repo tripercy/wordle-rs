@@ -46,7 +46,7 @@ impl<'a> Game<'a> {
     pub fn new(game_state: GameState<'a>) -> Game<'a> {
         let guess_area_height = 3 * 6 + 2; // TODO: replace with config number of guesses
         let guess_width = 5 * 5 + 2; // TODO: replace with word len
-        return Game {
+        Game {
             running: true,
             input_state: InputState::INPUT,
             next_screen: AppState::MENU,
@@ -57,7 +57,7 @@ impl<'a> Game<'a> {
             input_buffer: String::new(),
             noti_title: String::new(),
             noti_detail: String::new(),
-        };
+        }
     }
 
     pub fn run(mut self, terminal: &mut DefaultTerminal) -> io::Result<AppState> {
@@ -65,7 +65,7 @@ impl<'a> Game<'a> {
             terminal.draw(|f| self.render(f))?;
             self.handle_input()?;
         }
-        return Ok(self.next_screen);
+        Ok(self.next_screen)
     }
 }
 
