@@ -26,7 +26,7 @@ impl<'a> GameState<'a> {
         return Ok(check_guess(&self.answer, guess));
     }
 
-    pub fn get_answer(&'a self) -> Result<&'a str, &str> {
+    pub fn get_answer(&'a self) -> Result<&'a str, &'a str> {
         if !self.won && self.guesses_left > 0 {
             return Err("game must be finished before answer can be accessed");
         }

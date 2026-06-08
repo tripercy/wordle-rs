@@ -100,7 +100,11 @@ impl<'a> Game<'a> {
     fn render_guess_area(&self, frame: &mut Frame, area: Rect) {
         let block = Block::bordered()
             .border_type(BorderType::Double)
-            .title("Guesses");
+            .title(format!(
+                "Guesses ({}/{})",
+                self.game_state.guesses_max - self.game_state.guesses_left,
+                self.game_state.guesses_max
+            ));
         let inner = block.inner(area);
         // Split area into max guesses, currently hard code 6 guesses
         let mut constraints: Vec<Constraint> = Vec::new();
@@ -126,6 +130,7 @@ impl<'a> Game<'a> {
         frame.render_widget(BlockyText::new(self.input_buffer.chars(), vec![]), inner);
         frame.render_widget(block, area);
     }
+
     fn render_notification(&self, frame: &mut Frame, area: Rect) {
         let content = Paragraph::new(vec![
             Line::styled(&self.noti_title, Style::new().bold()),

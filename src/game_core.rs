@@ -10,7 +10,7 @@ pub use char_status::CharStatus;
 pub struct GameState<'a> {
     pub guesses_left: usize,
     pub won: bool,
-    guesses_max: usize,
+    pub guesses_max: usize,
     word_len: usize,
     use_dict: bool,
     dictionary: &'a HashSet<String>,
