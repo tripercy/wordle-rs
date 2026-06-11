@@ -1,3 +1,4 @@
+use std::cmp;
 use std::collections::HashMap;
 
 use crate::game_core::CharStatus;
@@ -21,7 +22,10 @@ impl<'a> GameState<'a> {
             return Ok(vec![CharStatus::Correct; self.word_len]);
         }
 
-        Ok(check_guess(&self.answer, guess))
+        let result = check_guess(&self.answer, guess);
+        self.update_char_status(guess, &result);
+
+        Ok(result)
     }
 
     pub fn get_answer(&'a self) -> Result<&'a str, &'a str> {
@@ -31,7 +35,7 @@ impl<'a> GameState<'a> {
         Ok(&self.answer)
     }
 
-    fn check_valid_guess(&self, guess: &str) -> Result<bool, String> {
+    fn check_valid_guess(&self, guess: &str) -> Result<(), String> {
         if guess.len() != self.word_len {
             return Err(format!(
                 "invalid guess len, got {}, expected {}",
@@ -44,7 +48,16 @@ impl<'a> GameState<'a> {
             return Err(String::from("guess not present in dictionary"));
         }
 
-        Ok(true)
+        Ok(())
+    }
+
+    fn update_char_status(&mut self, guess: &str, result: &Vec<CharStatus>) {
+        for (i, ch) in guess.chars().enumerate() {
+            self.char_status
+                .entry(ch)
+                .and_modify(|status| *status = cmp::min(*status, result[i]))
+                .or_insert(result[i]);
+        }
     }
 }
 

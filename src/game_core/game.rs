@@ -1,5 +1,5 @@
 use crate::game_core::GameState;
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 impl<'a> GameState<'a> {
     pub fn new_game_with_dict(
@@ -9,11 +9,12 @@ impl<'a> GameState<'a> {
         answer: String,
     ) -> Result<GameState<'a>, String> {
         let game_state = GameState {
-            guesses_max,
             guesses_left: guesses_max,
             won: false,
-            word_len,
             use_dict: true,
+            char_status: HashMap::new(),
+            word_len,
+            guesses_max,
             dictionary,
             answer,
         };
