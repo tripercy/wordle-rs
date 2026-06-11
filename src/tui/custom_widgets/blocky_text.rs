@@ -9,6 +9,7 @@ use ratatui::{
 
 #[derive(Clone)]
 pub struct BlockyText<'a> {
+    len: usize,
     lines: Vec<Line<'a>>,
     blocks: Vec<Block<'a>>,
     cell_constraints: Vec<Constraint>,
@@ -57,9 +58,14 @@ impl<'a> BlockyText<'a> {
         }
 
         BlockyText {
+            len: lines.len() * 5,
             lines,
             blocks,
             cell_constraints,
         }
+    }
+
+    pub fn len(&self) -> usize {
+        self.len
     }
 }

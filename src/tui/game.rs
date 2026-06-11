@@ -13,6 +13,8 @@ use crate::{
     tui::{AppState, custom_widgets::blocky_text::BlockyText},
 };
 
+const KB_LINES: [&'static str; 3] = ["qwertyuiop", "asdfghjkl", "zxcvbnm"];
+
 /*
  * Posisble transitions:
  * INPUT -> QUITTING
@@ -142,7 +144,33 @@ impl<'a> Game<'a> {
     }
 
     fn render_keyboard_area(&self, frame: &mut Frame, area: Rect) {
-        frame.render_widget(Block::bordered().title("Keyboard"), area);
+        let mut lines: Vec<BlockyText> = Vec::new();
+        let mut constraints: Vec<Constraint> = Vec::new();
+        for kb_line in KB_LINES {
+            lines.push(BlockyText::new(
+                kb_line.chars(),
+                kb_line
+                    .chars()
+                    .map(|ch| match self.game_state.char_status.get(&ch) {
+                        Some(status) => Self::map_char_status_to_style(*status),
+                        None => Style::new(),
+                    })
+                    .collect(),
+            ));
+            constraints.push(Constraint::Length(3));
+        }
+
+        let block = Block::bordered().title("Keyboard");
+        let inner = block
+            .inner(area)
+            .centered_vertically(Constraint::Length((lines.len() * 3) as u16));
+
+        frame.render_widget(block, area);
+        let rows = Layout::vertical(constraints).split(inner);
+        for (i, row) in rows.iter().enumerate() {
+            let centered = row.centered_horizontally(Constraint::Length(lines[i].len() as u16));
+            frame.render_widget(lines[i].clone(), centered);
+        }
     }
 
     fn handle_input(&mut self) -> io::Result<()> {
@@ -269,7 +297,7 @@ impl<'a> Game<'a> {
         match status {
             CharStatus::Correct => Style::new().green(),
             CharStatus::Exist => Style::new().yellow(),
-            CharStatus::Wrong => Style::new().gray(),
+            CharStatus::Wrong => Style::new().dark_gray(),
         }
     }
 
